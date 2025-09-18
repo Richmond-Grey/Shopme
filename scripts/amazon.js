@@ -1,29 +1,5 @@
 // Storing the details of the products in an array
-const products = [{
-    image: "images/products/athletic-cotton-socks-6-pairs.jpg",
-    name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
-    rating: {
-        rate: 4.5,
-        count: 87
-    },
-    priceCents: 1090
-}, {
-    image: "images/products/intermediate-composite-basketball.jpg",
-    name: "Intermediate Size Basketball",
-    rating: {
-        rate: 4,
-        count: 127
-    },
-    priceCents: 2095
-}, {
-    image: "images/products/liquid-laundry-detergent-plain.jpg",
-    name: "Liquid Laundry Detergent, 110 Loads, 82.5 Fl Oz",
-    rating: {
-        rate: 4.5,
-        count: 305
-    },
-    priceCents: 2899
-}]
+
 
 let productsHTML = '';
 // Creating HTML for each product
@@ -40,7 +16,7 @@ products.forEach((product) => {
 
           <div class="product-rating-container">
             <img class="product-rating-stars"
-              src="images/ratings/rating-${product.rating.rate * 10}.png">
+              src="images/ratings/rating-${product.rating.stars * 10}.png">
             <div class="product-rating-count link-primary">
               ${product.rating.count}
             </div>
