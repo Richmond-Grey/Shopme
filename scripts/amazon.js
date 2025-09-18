@@ -1,6 +1,8 @@
+
+
+import {cart} from '../data/cart.js';
+
 // Storing the details of the products in an array
-
-
 let productsHTML = '';
 // Creating HTML for each product
 products.forEach((product) => {
