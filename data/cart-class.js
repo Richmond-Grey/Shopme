@@ -5,16 +5,18 @@
 
 class Cart {
     cartItems;
-    localStorageKey;
+    //Making this private so it can be used only in the class and can't be changed outside
+    #localStorageKey;
 
     constructor(localStorageKey){
-        this.localStorageKey = localStorageKey;
-        this.loadFromStorage();
+        this.#localStorageKey = localStorageKey;
+        this.#loadFromStorage();
     }
 
-    loadFromStorage(){
+    //Making this private so it can be used only in the class
+    #loadFromStorage(){
             //Making sure we are saving these stuff in a new cart callled cart-oop not cart
-            this.cartItems = JSON.parse(localStorage.getItem(this.localStorageKey));
+            this.cartItems = JSON.parse(localStorage.getItem(this.#localStorageKey));
             if (!this.cartItems){
                 this.cartItems = [{
                     productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
@@ -30,7 +32,7 @@ class Cart {
     };
 
     saveToStorage(){
-            localStorage.setItem(this.localStorageKey, JSON.stringify(this.cartItems));
+            localStorage.setItem(this.#localStorageKey, JSON.stringify(this.cartItems));
     }
 
     addToCart(productId){
