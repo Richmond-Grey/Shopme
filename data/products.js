@@ -73,10 +73,15 @@ export function loadProductsFetch(){
     return new Product(productDetails);
   });
 
+  //Error Handling
   console.log('load proucts');
+    }).catch((error) => {
+      console.log('Unexpected error. Please try again later');
     });
   return promise;
 }
+
+
 
 /*
 loadProductsFetch().then(() => {
@@ -94,17 +99,22 @@ export function loadProducts(fun){
 
   if (productDetails.type === 'clothing') {
     return new Clothing(productDetails);
-  }
+    }
 
-  return new Product(productDetails);
-});
-
-console.log(products);
-
-//So technically we are waiting for the products to load from the backend so
-// when it does come online the other code will run as well
-fun();
+    return new Product(productDetails);
   });
+
+  console.log(products);
+
+  //So technically we are waiting for the products to load from the backend so
+  // when it does come online the other code will run as well
+  fun();
+});
+  
+  xhr.addEventListener('error', () => {
+    //Error handling
+    console.log('Unexpected error. Please try again later');
+  })
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
 }
