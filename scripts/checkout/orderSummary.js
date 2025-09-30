@@ -10,6 +10,9 @@ import { renderPaymentSummary } from './paymentSummary.js';
 
 // Function to render the entire cart/order summary on the page
 export function renderOrderSummary() {
+  //Updating the number of checkout number of items
+  let currentQuantity = document.querySelector('.js-return-to-home-link');
+  currentQuantity.innerHTML = `${cart.length} items`
   let cartSummaryHTML = '';
 
   // Loop through each item in the cart
