@@ -48,7 +48,7 @@ export function renderOrderSummary(){
                   </div>
                   <div class="product-quantity">
                     <span>
-                      Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+                      Quantity: <span class="quantity-label js-quantity-label">${cartItem.quantity}</span>
                     </span>
                     <span class="update-quantity-link link-primary">
                       Update
@@ -57,6 +57,9 @@ export function renderOrderSummary(){
                     data-product-id = "${matchingProduct.id}">
                       Delete
                     </span>
+                    <div class= "js-value-input"
+                    data-product-id= ${matchingProduct.id}>
+                    </div>
                   </div>
                 </div>
 
@@ -112,10 +115,36 @@ export function renderOrderSummary(){
   document.querySelectorAll('.js-delete-link').forEach((link) => {
     link.addEventListener('click', () => {
       const productId = link.dataset.productId;
-      removeFromCart(productId);
 
-      const container = document.querySelector(`.js-cart-item-container-${productId}`);
-      container.remove();
+      document.querySelectorAll('.js-value-input').forEach((num) => {
+        if(num.dataset.productId === productId){
+
+          //Looking for the item in the cart to get the Quantity
+          cart.forEach((item) => {
+            if(item.productId === num.dataset.productId){
+              num.innerHTML = `<input type="number" min="1" max="${item.quantity}" value="1" class='js-input-value'>
+              <button class= 'js-enter-btn'> Enter </button>`;
+
+              let enterButton = document.querySelector('.js-enter-btn');
+              let itemValue = document.querySelector('.js-input-value');
+
+              enterButton.addEventListener('click', () => {
+                //console.log(Number(itemValue.value));
+                const status = removeFromCart(productId, Number(itemValue.value));
+                console.log(typeof status)
+                //If it returns false, the container won't be removed
+                if(status === 0){
+                  const container = document.querySelector(`.js-cart-item-container-${productId}`);
+                  container.remove();
+                }
+                num.innerHTML = '';
+              })
+            }
+          })
+          
+        }
+      })
+      
       //After deleting the product from the cart, we updated the payment summary code
       renderPaymentSummary();
     });

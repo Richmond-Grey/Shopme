@@ -1,3 +1,5 @@
+import { renderOrderSummary } from '../scripts/checkout/orderSummary.js';  
+
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
 if (!cart){
@@ -17,7 +19,7 @@ function saveToStorage(){
   localStorage.setItem('cart', JSON.stringify(cart));
 }
 
-export function addToCart(productId){
+export function addToCart(productId, value){
       // Check if the item is already in the cart
     let matchingItem;
 
@@ -28,11 +30,12 @@ export function addToCart(productId){
     });
 
     if (matchingItem) {
-      matchingItem.quantity += 1;
+      //Not necessary since value will always be one but we just want to learn here
+      matchingItem.quantity += value ? value: 1;
     } else {
       cart.push({
         productId: productId,
-        quantity: 1,
+        quantity: value,
         //Default delivery option
         deliveryOptions: '1'
       });
@@ -41,20 +44,55 @@ export function addToCart(productId){
     saveToStorage();
 }
 
-export function removeFromCart(productId){
+export function removeFromCart(productId, value){
   const newCart = [];
+  let count = 0;
+  let result;
+  
 
   // Loop through the cart, push items in a new array exept the deleted one
   cart.forEach((cartItem) => {
-    if (cartItem.productId !== productId){
-      newCart.push(cartItem)
+
+    if(cartItem.productId === productId){
+      //If all the values are to be deleted
+
+      if (value === cartItem.quantity){
+        console.log('Hey');
+        
+        cart.forEach((item) => {
+          if(productId !== item.productId){
+            newCart.push(item);
+            console.log(`Here is ${newCart}`)
+          }
+        });
+
+        result = 0;
+        cart = newCart;
+      }
+    
+    
+    
+    //Try out the logic here man , if you like forget
+      
+      else{
+        //currently working with refresh
+        cartItem.quantity = cartItem.quantity - value;
+        console.log('Hello');
+        renderOrderSummary();
+        result = 1;
+
+      }
     }
   });
 
-  cart = newCart
+  console.log(newCart);
+  
 
   saveToStorage();
+  return result;
+  
 }
+
 
 //Update delivery option and quantity
 
