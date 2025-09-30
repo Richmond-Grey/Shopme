@@ -15,9 +15,27 @@ if (!cart){
 
 }
 
+
+
 function saveToStorage(){
   localStorage.setItem('cart', JSON.stringify(cart));
 }
+
+//Working on Cart Quantity
+
+export function fixCartQuantity(){
+  let newCart = []
+  cart.forEach((item) => {
+    if(!(item.quantity < 0)){
+      newCart.push(item);
+    }
+  })
+  cart = newCart;
+  saveToStorage();
+  renderOrderSummary();
+}
+
+
 
 export function addToCart(productId, value){
       // Check if the item is already in the cart

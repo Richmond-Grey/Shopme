@@ -1,5 +1,5 @@
 // Importing functions, data, and utilities from other modules
-import { cart, removeFromCart, updateCart, updateDeliveryOption } from '../../data/cart.js';
+import { cart, removeFromCart, updateCart, updateDeliveryOption, fixCartQuantity} from '../../data/cart.js';
 import { products, getProduct } from '../../data/products.js';
 import { formatCurrency } from '../utils/money.js';
 import { hello } from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js'; // Example external lib
@@ -135,6 +135,8 @@ export function renderOrderSummary() {
               // Handle delete action
               enterButton.addEventListener('click', () => {
                 const status = removeFromCart(productId, Number(itemValue.value));
+                fixCartQuantity();
+
 
                 // If quantity becomes 0, remove the whole product container
                 if (status === 0) {
