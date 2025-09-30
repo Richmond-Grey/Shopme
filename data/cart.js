@@ -1,4 +1,5 @@
-import { renderOrderSummary } from '../scripts/checkout/orderSummary.js';  
+import { renderOrderSummary } from '../scripts/checkout/orderSummary.js';
+import { renderPaymentSummary } from '../scripts/checkout/paymentSummary.js';  
 
 export let cart = JSON.parse(localStorage.getItem('cart'));
 
@@ -33,6 +34,7 @@ export function fixCartQuantity(){
   cart = newCart;
   saveToStorage();
   renderOrderSummary();
+  renderPaymentSummary();
 }
 
 
@@ -97,6 +99,7 @@ export function removeFromCart(productId, value){
         cartItem.quantity = cartItem.quantity - value;
         console.log('Hello');
         renderOrderSummary();
+        renderPaymentSummary();
         result = 1;
 
       }
@@ -118,6 +121,7 @@ export function updateCart(productId, value){
       cartItem.quantity = cartItem.quantity + value;
       saveToStorage();
       renderOrderSummary();
+      renderPaymentSummary();
     }
   })
 }
