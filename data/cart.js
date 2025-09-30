@@ -94,6 +94,16 @@ export function removeFromCart(productId, value){
 }
 
 
+export function updateCart(productId, value){
+  cart.forEach((cartItem) => {
+    if(productId === cartItem.productId){
+      cartItem.quantity = cartItem.quantity + value;
+      saveToStorage();
+      renderOrderSummary();
+    }
+  })
+}
+
 //Update delivery option and quantity
 
 export function updateDeliveryOption(productID, deliveryOptionId){
