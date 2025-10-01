@@ -88,5 +88,12 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const url = new URL(window.location.href);
+      console.log(url.searchParams.get('orderId'));
+      //Place by using ? then the name of the parameter and can add another by just placing &
+      console.log(url.searchParams.get('productId'));
+    </script>
   </body>
 </html>

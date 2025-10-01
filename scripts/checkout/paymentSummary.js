@@ -2,7 +2,7 @@ import { cart } from "../../data/cart.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryOption } from "../../data/deliveryOptions.js";
 import { formatCurrency } from "../utils/money.js";
-import { addOrder, pd } from "../../data/orders.js";
+import { addOrder } from "../../data/orders.js";
 
 export function renderPaymentSummary(){
     let productPriceCents = 0;
@@ -76,7 +76,10 @@ export function renderPaymentSummary(){
                   cart: cart
                 })
               });
+              
+              //returning the json from the backend
               const order = await response.json();
+              //Add the new order to the beginning of the array
               addOrder(order);
               console.log(20)
 
@@ -88,6 +91,7 @@ export function renderPaymentSummary(){
             //Using window to cahnce the location of our url
 
             window.location.href = "orders.html"
+
           });
               
 }

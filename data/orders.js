@@ -1,4 +1,18 @@
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // Date formatting library
 export const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+function currentDate() {
+    const date = dayjs();
+    return date.format('MMMM D');
+}
+
+
+
+
+
+
+
+
 
 export function addOrder(order) {
     //Add the new order to the beginning of the array
@@ -15,4 +29,5 @@ export function pd(){
 
 function saveToStorage() {
     localStorage.setItem('orders', JSON.stringify(orders));
+    localStorage.setItem('pendingOrders', JSON.stringify(pendingOrders));
 }
