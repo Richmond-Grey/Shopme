@@ -2,11 +2,28 @@ import { orders } from '../../data/orders.js'
 import { products, getProduct } from '../../data/products.js';
 import { cart } from '../../data/cart.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
+import { formatCurrency } from '../utils/money.js';
+import { getDeliveryOption } from '../../data/deliveryOptions.js';
 
 function getItem(orderItem){
         let gridHTML = '';
-
+        
         orderItem.products.forEach((product) => {
+          let dateString;
+          //Getting the selected radio date 
+          cart.forEach((cartItem) => {
+            if(cartItem.productId === product.productId){
+              let deliveryOptionId = cartItem.deliveryOptions;
+              let deliveryOption = getDeliveryOption(deliveryOptionId)
+
+              let today = dayjs()
+
+              let deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+              dateString = deliveryDate.format("MMMM, D")
+              console.log(dateString)
+            }
+
+          })
           //Getting mathing value
           const matchingProduct = getProduct(product.productId);
 
@@ -21,7 +38,7 @@ function getItem(orderItem){
                 ${matchingProduct.name}
               </div>
               <div class="product-delivery-date">
-                Arriving on: ${dayjs(product.estimatedDeliveryTime).format("MMMM, D")}
+                Arriving on: ${dateString}
               </div>
               <div class="product-quantity">
                 Quantity: ${product.quantity}
@@ -52,6 +69,7 @@ export function ordering(){
     let count = 0;
     //Generating html for the order page
     orders.forEach((orderItem) => {
+
         console.log(orderItem)
         orderHTML += `
          <div class="order-container">
@@ -64,7 +82,7 @@ export function ordering(){
               </div>
               <div class="order-total">
                 <div class="order-header-label">Total:</div>
-                <div>$${orderItem.totalCostCents/100}</div>
+                <div>$${formatCurrency(orderItem.totalCostCents)}</div>
               </div>
             </div>
 

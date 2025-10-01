@@ -91,8 +91,6 @@ export function removeFromCart(productId, value){
       }
     
     
-    
-    //Try out the logic here man , if you like forget
       
       else{
         //currently working with refresh
@@ -141,3 +139,4 @@ export function updateDeliveryOption(productID, deliveryOptionId){
 
     saveToStorage();
 }
+
