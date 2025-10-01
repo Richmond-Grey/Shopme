@@ -76,6 +76,7 @@ export function renderOrderSummary() {
             </div>
           </div>
         </div>`;
+
   });
 
 
@@ -113,6 +114,16 @@ export function renderOrderSummary() {
     return html;
   }
 
+  if (cart.length === 0){
+    cartSummaryHTML = `<div class="js-cart-summary cart-summary">
+      <div data-testid="empty-cart-message">
+       <p> Your cart is empty.</p>
+      </div>
+      <a class="button-primary view-products-link" href="amazon.html" data-testid="view-products-link">
+        View products
+      </a>
+    </div>`
+  }
   // Render the full HTML inside the container
   document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
  

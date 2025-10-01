@@ -209,3 +209,22 @@
   margin-top: 11px;
   margin-bottom: 15px;
 }
+
+/* When the cart is empty */
+.cart-summary{
+  margin-top: 20px;
+}
+
+.cart-summary p{
+  color: rgb(177, 39, 4);
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.button-primary{
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+}

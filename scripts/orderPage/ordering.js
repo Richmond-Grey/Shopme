@@ -1,6 +1,6 @@
 import { orders } from '../../data/orders.js'
 import { products, getProduct } from '../../data/products.js';
-import { cart } from '../../data/cart.js'
+import { cart, clearCart } from '../../data/cart.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import { formatCurrency } from '../utils/money.js';
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
@@ -60,6 +60,10 @@ function getItem(orderItem){
           
            
         })
+
+        //Emptying cart
+      
+      clearCart()
       return gridHTML
 }
 
