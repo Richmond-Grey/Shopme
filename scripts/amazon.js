@@ -52,7 +52,8 @@ function renderProductsGrid(){
             ${product.extraInfoHTML()}
             <div class="product-spacer"></div>
 
-            <div class="added-to-cart">
+            <div class="added-to-cart js-added-to-cart"
+            data-product-id = "${product.id}">
               <img src="images/icons/checkmark.png">
               Added
             </div>
@@ -98,7 +99,20 @@ function renderProductsGrid(){
         }
       });
       
-      
+      document.querySelectorAll('.js-added-to-cart').forEach((selector) => {
+        
+        if(selector.dataset.productId === productId){
+          console.log(selector.dataset.productId);
+          //changing the css
+          selector.style.opacity = 1;
+
+          setTimeout(() => {
+            selector.style.opacity = 0;
+          }, 1500);
+        }
+      })
+
+     
       updateCartQuantity();
 
       
