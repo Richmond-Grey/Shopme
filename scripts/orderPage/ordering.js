@@ -9,23 +9,13 @@ function getItem(orderItem){
         let gridHTML = '';
         
         orderItem.products.forEach((product) => {
-          let dateString;
-          //Getting the selected radio date 
-          cart.forEach((cartItem) => {
-            if(cartItem.productId === product.productId){
-              let deliveryOptionId = cartItem.deliveryOptions;
-              let deliveryOption = getDeliveryOption(deliveryOptionId)
-              
-
-              let today = dayjs()
-
-              let deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
-              console.log(`There is our ${deliveryDate}`)
-              dateString = deliveryDate.format("MMMM, D")
-              
-            }
-
-          })
+          let dateString = '';
+           permanentCart.forEach((permItem) => {
+               if(product.productId === permItem.id){
+                   let date = permItem.delivery;
+                   dateString = dayjs(date).format("MMMM, D")
+               }
+           })
           //Getting mathing value
           const matchingProduct = getProduct(product.productId);
 

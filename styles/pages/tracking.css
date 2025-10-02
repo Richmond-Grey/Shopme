@@ -73,7 +73,7 @@
   overflow: hidden;
 }
 /*Add animation to progress bar and timer*/
-
+/*
 @keyframes progressAnimation {
   0% {
     width: 0%;
@@ -82,11 +82,11 @@
     width: 5%;
   }
 }
+  */
 
 .progress-bar {
   height: 100%;
   background-color: green;
   border-radius: 50px;
   width: 5%;
-  animation: progressAnimation 1s ease-in-out;
 }
