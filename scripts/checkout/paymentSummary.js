@@ -65,33 +65,43 @@ export function renderPaymentSummary(){
     
           document.querySelector(".js-payment-summary").innerHTML = paymentSummaryHTML;
 
-          document.querySelector(".js-place-order").addEventListener("click", async () => {
-            try{
-              const response = await fetch("https://supersimplebackend.dev/orders", {
-                method: "POST",
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  cart: cart
-                })
-              });
-              
-              //returning the json from the backend
-              const order = await response.json();
-              //Add the new order to the beginning of the array
-              addOrder(order);
-              console.log(20)
+          //Now when the cart is empty the button won't work
+          if (cart.length > 0){
+              document.querySelector(".js-place-order").addEventListener("click", async () => {
+              try{
+                const response = await fetch("https://supersimplebackend.dev/orders", {
+                  method: "POST",
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    cart: cart
+                  })
+                });
+                
+                //returning the json from the backend
+                const order = await response.json();
+                //Add the new order to the beginning of the array
+                addOrder(order);
+                console.log(20)
 
-            }
-              catch (error) {
-                console.log('Unexpected error. Please try again later');
               }
+                catch (error) {
+                  console.log('Unexpected error. Please try again later');
+                }
 
-            //Using window to cahnce the location of our url
+              //Using window to cahnce the location of our url
 
-            window.location.href = "orders.html"
+              window.location.href = "orders.html"
 
-          });
+            });
+
+            
+          }
+
+          else{
+            document.querySelector(".js-place-order").innerHTML = 'Disabled'
+          }
+          
               
 }

@@ -156,7 +156,13 @@ export function renderOrderSummary() {
                 // If quantity becomes 0, remove the whole product container
                 if (status === 0) {
                   const container = document.querySelector(`.js-cart-item-container-${productId}`);
-                  container.remove();
+
+                  //So techinally we've cleared this already so when the page rerenders we need to check if this exists before
+                  //running it so we don't get an error
+                  if(container){
+                    container.remove();
+                  }
+                  
                 }
 
                 // Reset input field
