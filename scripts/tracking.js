@@ -2,7 +2,7 @@ import { orders } from '../data/orders.js'
 import { loadProductsFetch } from '../data/products.js'
 import { getProduct } from '../../data/products.js'
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
-import { cart } from '../data/cart.js'
+import { cart, permanentCart } from '../data/cart.js'
 
 function getProductQuantity(orderItem, url){
     const searchProductId = url.searchParams.get('productId')
@@ -21,7 +21,12 @@ function getProductQuantity(orderItem, url){
             document.querySelector('.js-product-info').innerHTML = matchingProduct.name
 
             //Getting delivery day
-        
+
+            permanentCart.forEach((permItem) => {
+                if(product.productId === permItem.id){
+                    document.querySelector('.js-delivery-date').innerHTML = `Arriving on ${permItem.delivery}`;
+                }
+            })
             
         }
     })
