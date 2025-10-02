@@ -1,6 +1,6 @@
 import { orders } from '../../data/orders.js'
 import { products, getProduct } from '../../data/products.js';
-import { cart, clearCart } from '../../data/cart.js'
+import { cart, clearCart, addToPermanentCart, permanentCart } from '../../data/cart.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import { formatCurrency } from '../utils/money.js';
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
@@ -15,12 +15,14 @@ function getItem(orderItem){
             if(cartItem.productId === product.productId){
               let deliveryOptionId = cartItem.deliveryOptions;
               let deliveryOption = getDeliveryOption(deliveryOptionId)
+              
 
               let today = dayjs()
 
               let deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+              console.log(`There is our ${deliveryDate}`)
               dateString = deliveryDate.format("MMMM, D")
-              console.log(dateString)
+              
             }
 
           })
@@ -61,9 +63,7 @@ function getItem(orderItem){
            
         })
 
-        //Emptying cart
-      
-      clearCart()
+        
       return gridHTML
 }
 

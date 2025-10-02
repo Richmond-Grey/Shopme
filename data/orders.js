@@ -1,17 +1,6 @@
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // Date formatting library
 export const orders = JSON.parse(localStorage.getItem('orders')) || [];
 
-function currentDate() {
-    const date = dayjs();
-    return date.format('MMMM D');
-}
-
-
-
-
-
-
-
 
 
 export function addOrder(order) {

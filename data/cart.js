@@ -1,17 +1,23 @@
 import { renderOrderSummary } from '../scripts/checkout/orderSummary.js';
 import { renderPaymentSummary } from '../scripts/checkout/paymentSummary.js';  
+import { getDeliveryOption } from './deliveryOptions.js';
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 export let cart = JSON.parse(localStorage.getItem('cart'));
-
+export let permanentCart = JSON.parse(localStorage.getItem('permanentCart'));
 if (!cart){
   cart = [];
+}
 
+if(!permanentCart){
+  permanentCart = []
 }
 
 
 
 function saveToStorage(){
   localStorage.setItem('cart', JSON.stringify(cart));
+  localStorage.setItem('permanentCart', JSON.stringify(permanentCart));
 }
 
 //Working on Cart Quantity
@@ -134,4 +140,34 @@ export function updateDeliveryOption(productID, deliveryOptionId){
 
 export function clearCart(){
   localStorage.removeItem('cart')
+}
+
+//Add to permanent Cart
+
+export function addToPermanentCart(carts){
+  console.log(`This is ${carts}`)
+  carts.forEach((cartItem) => {
+    
+    let tempCart = {}
+
+    let deliveryOptionId = cartItem.deliveryOptions
+    
+    let deliveryOption = getDeliveryOption(deliveryOptionId)
+    
+    let today = dayjs()
+
+    let deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+    console.log(`Here is our ${deliveryDate}`)
+    let dateString = deliveryDate.format("MMMM, D")
+    
+    tempCart ={
+      name: "Items",
+      id: cartItem.productId,
+      delivery: dateString
+    }
+
+    permanentCart.push(tempCart)
+  })
+  
+  saveToStorage();
 }

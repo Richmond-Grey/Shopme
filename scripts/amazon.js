@@ -1,7 +1,8 @@
 
 import { formatCurrency } from './utils/money.js';
-import {cart, addToCart} from '../data/cart.js';
+import {cart, addToCart, permanentCart} from '../data/cart.js';
 import { products, loadProducts } from '../data/products.js';
+import { orders } from '../data/orders.js';
 
 
 loadProducts(renderProductsGrid);
@@ -101,10 +102,8 @@ function renderProductsGrid(){
       updateCartQuantity();
 
       
-
-      
-      
     });
   });
+
 
 }
