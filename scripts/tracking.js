@@ -1,12 +1,26 @@
 import { orders } from '../data/orders.js'
 import { loadProductsFetch } from '../data/products.js'
+import { getProduct } from '../../data/products.js'
+import { getDeliveryOption } from '../../data/deliveryOptions.js';
 
 function getProductQuantity(orderItem, url){
-    
     const searchProductId = url.searchParams.get('productId')
     orderItem.products.forEach((product) => {
         if(searchProductId.trim() === product.productId){
             console.log(product.productId)
+            document.querySelector('.js-product-infos').innerHTML = `Quantity: ${product.quantity}`
+
+            //Getting product from the cart using product Id
+
+            const matchingProduct = getProduct(product.productId)
+            //Getting image
+            document.querySelector('.js-product-image').innerHTML = `<img class="product-image" src="${matchingProduct.image}">`
+
+            //Getting name
+            document.querySelector('.js-product-info').innerHTML = matchingProduct.name
+
+            //Getting delivery day
+            
         }
     })
 }
@@ -21,6 +35,7 @@ function tracker(){
             //Remove any whitespace
             if (orderItem.id === orderId.trim()) {
                  getProductQuantity(orderItem, url)
+                
              }
 
         })
@@ -29,7 +44,7 @@ function tracker(){
 
 async function loadProducts(){
     try{
-        await loadProductsFetch
+        await loadProductsFetch()
     }
     catch(error){
         console.log('Unexpected error')
