@@ -25,11 +25,17 @@ function getProductQuantity(orderItem, url){
             permanentCart.forEach((permItem) => {
                 if(product.productId === permItem.id){
                     document.querySelector('.js-delivery-date').innerHTML = `Arriving on ${permItem.delivery}`;
+
+                    //Working on the loading animation
                 }
             })
+
+            
             
         }
     })
+
+
 }
 
 function tracker(){
