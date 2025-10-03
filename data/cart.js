@@ -158,7 +158,7 @@ export function addToPermanentCart(carts){
 
     let deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
     console.log(`Here is our ${deliveryDate}`)
-    let dateString = deliveryDate.format("dddd, D, MMMM")
+    
     
     tempCart ={
       name: "Items",

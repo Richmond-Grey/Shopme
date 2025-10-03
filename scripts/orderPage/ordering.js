@@ -13,7 +13,7 @@ function getItem(orderItem){
            permanentCart.forEach((permItem) => {
                if(product.productId === permItem.id){
                    let date = permItem.delivery;
-                   dateString = dayjs(date);
+                   dateString = dayjs(date).format("MMMM, D");
                }
            })
           //Getting mathing value
@@ -30,7 +30,7 @@ function getItem(orderItem){
                 ${matchingProduct.name}
               </div>
               <div class="product-delivery-date">
-                Arriving on: ${dateString.format("MMMM, D")}
+                Arriving on: ${dateString}
               </div>
               <div class="product-quantity">
                 Quantity: ${product.quantity}

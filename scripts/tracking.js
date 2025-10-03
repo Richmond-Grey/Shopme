@@ -47,17 +47,29 @@ function getProductQuantity(orderItem, url){
                 }
             })
 
-            //Testing finalDate with various dates
-            console.log(`Our final date is ${finalDate}`)
 
             //Checking how many days it is to final date
             const hoursLeft = finalDate.diff(today, 'hours');
             console.log(hoursLeft)
 
+            //Setting the width of the loading bar
+            let calcWidth = 100 - hoursLeft;
+            if(calcWidth < 0 && calcWidth < 5){
+                calcWidth = 5;
+            }
+
+            else if(calcWidth > 100){
+                calcWidth = 100;
+            }
+
+            root.style.setProperty('--progress-bar-width', `${calcWidth}%`);
+
             
             
         }
     })
+
+    
 
 
 }
