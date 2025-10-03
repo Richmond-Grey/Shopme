@@ -163,7 +163,7 @@ export function addToPermanentCart(carts){
     tempCart ={
       name: "Items",
       id: cartItem.productId,
-      delivery: dateString
+      delivery: deliveryDate
     }
 
     permanentCart.push(tempCart)

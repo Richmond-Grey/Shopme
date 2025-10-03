@@ -72,21 +72,27 @@
   border-radius: 50px;
   overflow: hidden;
 }
+
+/*Creating variable to store the width */
+:root {
+  --progress-bar-width: 50%;
+}
+
+
 /*Add animation to progress bar and timer*/
-/*
 @keyframes progressAnimation {
   0% {
     width: 0%;
   }
   100% {
-    width: 5%;
+    width: var(--progress-bar-width);
   }
 }
-  */
 
 .progress-bar {
   height: 100%;
   background-color: green;
   border-radius: 50px;
-  width: 5%;
+  width: var(--progress-bar-width);
+  animation: progressAnimation 2s ease-in-out;
 }
