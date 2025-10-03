@@ -1,4 +1,4 @@
-import { orders } from '../../data/orders.js'
+import { orders, saveToStorage } from '../../data/orders.js'
 import { products, getProduct } from '../../data/products.js';
 import { cart, clearCart, addToPermanentCart, permanentCart } from '../../data/cart.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
@@ -64,36 +64,43 @@ export function ordering(){
     //Generating html for the order page
     orders.forEach((orderItem) => {
 
-        console.log(orderItem)
-        orderHTML += `
-         <div class="order-container">
-          
-          <div class="order-header">
-            <div class="order-header-left-section">
-              <div class="order-date">
-                <div class="order-header-label">Order Placed:</div>
-                <div>${dayjs(orderItem.orderTime).format("MMMM, D")}</div>
+      if(orderItem.products.length !== 0){
+          console.log(orderItem)
+          orderHTML += `
+          <div class="order-container}">
+            
+            <div class="order-header">
+              <div class="order-header-left-section">
+                <div class="order-date">
+                  <div class="order-header-label">Order Placed:</div>
+                  <div>${dayjs(orderItem.orderTime).format("MMMM, D")}</div>
+                </div>
+                <div class="order-total">
+                  <div class="order-header-label">Total:</div>
+                  <div>$${formatCurrency(orderItem.totalCostCents)}</div>
+                </div>
               </div>
-              <div class="order-total">
-                <div class="order-header-label">Total:</div>
-                <div>$${formatCurrency(orderItem.totalCostCents)}</div>
-              </div>
+
+              <div class="order-header-right-section">
+                <div class="order-header-label">Order ID:</div>
+                <div>${orderItem.id}</div>
+              </div> 
             </div>
+            <div class="order-details-grid js-order-details-grid">
+            ${getItem(orderItem)}
+            </div>
+          </div>`
 
-            <div class="order-header-right-section">
-              <div class="order-header-label">Order ID:</div>
-              <div>${orderItem.id}</div>
-            </div> 
-          </div>
-          <div class="order-details-grid js-order-details-grid">
-          ${getItem(orderItem)}
-          </div>
-        </div>`
+          
 
+
+          document.querySelector('.js-orders-grid').innerHTML = orderHTML;
+      }
+      else{
+        orders.splice(orders.indexOf(orderItem), 1)
+        saveToStorage()
+      }
         
-
-
-        document.querySelector('.js-orders-grid').innerHTML = orderHTML;
          
         
         

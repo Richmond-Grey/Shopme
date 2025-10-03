@@ -16,7 +16,6 @@ export function pd(){
 
 
 
-function saveToStorage() {
+export function saveToStorage() {
     localStorage.setItem('orders', JSON.stringify(orders));
-    localStorage.setItem('pendingOrders', JSON.stringify(pendingOrders));
 }

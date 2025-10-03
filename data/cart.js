@@ -15,7 +15,7 @@ if(!permanentCart){
 
 
 
-function saveToStorage(){
+export function saveToStorage(){
   localStorage.setItem('cart', JSON.stringify(cart));
   localStorage.setItem('permanentCart', JSON.stringify(permanentCart));
 }

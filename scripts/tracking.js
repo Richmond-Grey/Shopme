@@ -1,12 +1,13 @@
-import { orders } from '../data/orders.js'
+import { orders, saveToStorage } from '../data/orders.js'
 import { loadProductsFetch } from '../data/products.js'
 import { getProduct } from '../../data/products.js'
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
-import { cart, permanentCart } from '../data/cart.js'
+import { cart, permanentCart, saveToStorage as saveToStorageCart } from '../data/cart.js'
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // Date formatting library
 
 function getProductQuantity(orderItem, url){
     const searchProductId = url.searchParams.get('productId')
+
     orderItem.products.forEach((product) => {
         if(searchProductId.trim() === product.productId){
             console.log(product.productId)
@@ -63,6 +64,55 @@ function getProductQuantity(orderItem, url){
             }
 
             root.style.setProperty('--progress-bar-width', `${calcWidth}%`);
+
+            //Removing item from the permanent cart once it has been delivered
+            permanentCart.forEach((permItem) => {
+                if(product.productId === permItem.id){
+                    
+                    if(calcWidth === 100){
+                       permanentCart.splice(permanentCart.indexOf(permItem), 1);
+                       saveToStorageCart();
+                        
+
+                        //Setting html of the page
+
+                        document.querySelector('.js-order-tracking').innerHTML = `<div class="order-tracking-title">Order Delivered</div>
+                        <a href="amazon.html">Continue Shopping</a>`
+
+                        //After 5hrs remove the item from the orders array and the container from the menu
+                        if(hoursLeft === -5){
+                                setTimeout(() => {
+                                orders.forEach((orderItem) => {
+                                        orderItem.products.forEach((productItem) => {
+                                        if(productItem.productId === searchProductId.trim()){
+                                            orderItem.products.splice(orderItem.products.indexOf(productItem), 1);
+                                            console.log('It has been deleted')
+                                            saveToStorage();
+                                        }
+                                        
+                                        else{
+                                            //console.log(`${permItem.productId} is not equal to ${searchProductId.trim()}`)
+                                        }
+                                    })
+                                })
+                                
+                            }, 1000)
+
+                            
+                            orders.forEach((orderItem) => {
+                                console.log(orderItem)
+                            })
+                            console.log('Deleted')
+                        }
+                        
+                    }
+                }
+            })
+
+            permanentCart.forEach((perm) => {
+                     console.log(perm)
+                })
+
 
             
             
