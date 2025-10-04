@@ -1,132 +1,219 @@
-
-import { formatCurrency } from './utils/money.js';
-import {cart, addToCart, permanentCart} from '../data/cart.js';
+// Importing dependencies and data modules
+import { cart, addToCart } from '../data/cart.js';
 import { products, loadProducts } from '../data/products.js';
-import { orders } from '../data/orders.js';
 import Fuse from "https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.esm.js";
 
-
+// Load all products first, then run the render function
 loadProducts(renderProductsGrid);
 
-export function search(item, url){
+
+/* 
+-------------------------------------
+ SEARCH FUNCTION
+-------------------------------------
+This function handles the search logic.
+It takes in:
+  - item: the text the user typed
+  - url: the current page URL
+It uses Fuse.js for fuzzy searching, so users can find results even with small typos.
+*/
+export function search(item, url) {
   let results;
 
-  //Checking if the item is empty so we can return the main page and if product isn't found we return another page
-  
-        //Checking if we are in the new page
+  // Check if we’re not already on the same page
+  if (!(window.location.href === url)) {
 
-      if(!(window.location.href === url)){
-          if(item === ''){
-                //Configuring fuse
-              const options = {
-                keys: ["name", "keywords"],
-                threshold: 0.4
-              };
+    // If the search box is empty (no item typed)
+    if (item === '') {
 
-              const fuse = new Fuse(products, options);
+      // Fuse.js options — what fields to search through and how strict to be
+      const options = {
+        keys: ["name", "keywords"], // The fields we’ll search in each product
+        threshold: 0.4 // Lower = more strict, higher = more fuzzy matches
+      };
 
-              //Searching
-              const result = fuse.search(item);
+      // Initialize Fuse with our products and options
+      const fuse = new Fuse(products, options);
 
-              console.log(result)
+      // Perform the search (in this case, empty search)
+      const result = fuse.search(item);
 
-              //Extract items
-              const matches = result.map(r => r.item);
-              console.log(matches);
-              results = matches
-          }
-           
-      
-  
+      console.log(result);
 
-          else{
-              //Configuring fuse
-                    const options = {
-                      keys: ["name", "keywords"],
-                      threshold: 0.4
-                    };
+      // Extract the matched items only
+      const matches = result.map(r => r.item);
+      console.log(matches);
 
-                    const fuse = new Fuse(products, options);
+      // Store matches in results
+      results = matches;
+    } 
+    
+    // If the user typed something
+    else {
+      const options = {
+        keys: ["name", "keywords"],
+        threshold: 0.4
+      };
 
-                    //Searching
-                    const result = fuse.search(item);
+      const fuse = new Fuse(products, options);
 
-                    console.log(result)
+      // Search using Fuse.js
+      const result = fuse.search(item);
+      console.log(result);
 
-                    //Extract items
-                    const matches = result.map(r => r.item);
-                    console.log(matches);
-                    if(matches.length === 0){
-                      results = 'clear'
-                    }
-                    else{
-                      results = matches
-                    }
-                    
-            }
+      const matches = result.map(r => r.item);
+      console.log(matches);
 
+      // If nothing matches, tell renderProductsGrid() to clear results
+      if (matches.length === 0) {
+        results = 'clear';
+      } else {
+        results = matches;
+      }
+    }
+  }
+
+  return results;
 }
- 
 
-  return results
-  
-}
-function renderProductsGrid(){
-  //Working on search function 
-  const searching = document.querySelector('.js-search-bar')
 
+
+/*
+-------------------------------------
+ RENDER PRODUCTS GRID
+-------------------------------------
+This function:
+  - Displays all the products on the page
+  - Handles search input (both pressing Enter and clicking the icon)
+  - Updates cart quantity
+  - Adds "Add to cart" functionality
+*/
+function renderProductsGrid() {
+
+  // Get the search bar element
+  const searching = document.querySelector('.js-search-bar');
+
+  // Retrieve the last search result stored in localStorage (if any)
   let searchItem = JSON.parse(localStorage.getItem('searchItem')) || [];
 
+  // Listen for Enter key in the search bar
   searching.addEventListener('keydown', (event) => {
-    if(event.key === "Enter"){
-      
-      //Now placing item in the url as a param
+    if (event.key === "Enter") {
+
+      // Create a new URL with the search value as a query parameter
       const url = new URL(window.location.href);
       url.searchParams.set('search', searching.value);
+
+      // Navigate to that new URL
       window.location.href = url;
+
+      // Run search() and save the result
       searchItem = search(searching.value, url);
       console.log(`Everyone knows the ${searchItem}`);
 
-      //Saving searchitem in localstorage
-
+      // Save search results in localStorage
       localStorage.setItem('searchItem', JSON.stringify(searchItem));
-      renderProductsGrid()
+
+      // Rerender products with the new search result
+      renderProductsGrid();
     }
-  })
+  });
 
-  //Making the search icon work as well
 
+  // When user clicks the search icon instead of pressing Enter
   const searchIcon = document.querySelector('.js-search-icon');
   searchIcon.addEventListener('click', () => {
-    //Now placing item in the url as a param
-      const url = new URL(window.location.href);
-      url.searchParams.set('search', searching.value);
-      window.location.href = url;
-      searchItem = search(searching.value, url);
-      console.log(`Everyone knows the ${searchItem}`);
+    const url = new URL(window.location.href);
+    url.searchParams.set('search', searching.value);
+    window.location.href = url;
 
-      //Saving searchitem in localstorage
+    searchItem = search(searching.value, url);
+    console.log(`Everyone knows the ${searchItem}`);
 
-      localStorage.setItem('searchItem', JSON.stringify(searchItem));
-      renderProductsGrid()
-  })
-  
-  
-  // Storing the details of the products in an array
+    localStorage.setItem('searchItem', JSON.stringify(searchItem));
+    renderProductsGrid();
+  });
+
+
+
+  // Start building the HTML for products
   let productsHTML = '';
-  // Creating HTML for each product
 
-  //Adding second condition because when item is not found and we return to the main page, item not found still pops up
-  if(searchItem === 'clear' && window.location.href !== 'http://127.0.0.1:5500/amazon.html'){
-    productsHTML = 'Item not found'
+  /* 
+  If the search result was 'clear', show "Item not found"
+  But make sure we’re not on the home page
+  */
+  if (searchItem === 'clear' && window.location.href !== 'http://127.0.0.1:5500/amazon.html') {
+    productsHTML = 'Item not found';
   }
-  //Now for all the products to load the site first have to follow all these rules
-  else if(!searchItem || searchItem.length === 0 || window.location.href === 'http://127.0.0.1:5500/amazon.html'){
-      products.forEach((product) => {
-        productsHTML += `<div class="product-container">
+
+  /* 
+  If no search was made, or if it’s the homepage, show all products.
+  */
+  else if (!searchItem || searchItem.length === 0 || window.location.href === 'http://127.0.0.1:5500/amazon.html') {
+    products.forEach((product) => {
+
+      // Build each product card
+      productsHTML += `
+        <div class="product-container">
+          <div class="product-image-container">
+            <img class="product-image" src="${product.image}">
+          </div>
+
+          <div class="product-name limit-text-to-2-lines">
+            ${product.name}
+          </div>
+
+          <div class="product-rating-container">
+            <img class="product-rating-stars" src="${product.getStarsUrl()}">
+            <div class="product-rating-count link-primary">
+              ${product.rating.count}
+            </div>
+          </div>
+
+          <div class="product-price">
+            ${product.getPrice()}
+          </div>
+
+          <div class="product-quantity-container">
+            <select class="js-item-quantity" data-product-id="${product.id}">
+              ${Array.from({length: 10}, (_, i) => `<option value="${i+1}" ${i===0 ? 'selected' : ''}>${i+1}</option>`).join('')}
+            </select>
+          </div>
+
+          ${product.extraInfoHTML()}
+
+          <div class="product-spacer"></div>
+
+          <div class="added-to-cart js-added-to-cart" data-product-id="${product.id}">
+            <img src="images/icons/checkmark.png">
+            Added
+          </div>
+
+          <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${product.id}">
+            Add to Cart
+          </button>
+        </div>
+      `;
+    });
+    console.log('Everything is out');
+    console.log(`Here is our ${searchItem}`);
+  }
+
+  /* 
+  If there *is* a search result, show only those products.
+  */
+  else {
+    productsHTML = '';
+
+    products.forEach((product) => {
+      searchItem.forEach((search) => {
+
+        if (product.id === search.id) {
+          productsHTML += `
+            <div class="product-container">
               <div class="product-image-container">
-                <img class="product-image"
-                  src="${product.image}">
+                <img class="product-image" src="${product.image}">
               </div>
 
               <div class="product-name limit-text-to-2-lines">
@@ -134,8 +221,7 @@ function renderProductsGrid(){
               </div>
 
               <div class="product-rating-container">
-                <img class="product-rating-stars"
-                  src="${product.getStarsUrl()}">
+                <img class="product-rating-stars" src="${product.getStarsUrl()}">
                 <div class="product-rating-count link-primary">
                   ${product.rating.count}
                 </div>
@@ -146,153 +232,96 @@ function renderProductsGrid(){
               </div>
 
               <div class="product-quantity-container">
-                <select class="js-item-quantity"
-                data-product-id= ${product.id}>
-                  <option selected value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
+                <select class="js-item-quantity" data-product-id="${product.id}">
+                  ${Array.from({length: 10}, (_, i) => `<option value="${i+1}" ${i===0 ? 'selected' : ''}>${i+1}</option>`).join('')}
                 </select>
               </div>
+
               ${product.extraInfoHTML()}
+
               <div class="product-spacer"></div>
 
-              <div class="added-to-cart js-added-to-cart"
-              data-product-id = "${product.id}">
+              <div class="added-to-cart js-added-to-cart" data-product-id="${product.id}">
                 <img src="images/icons/checkmark.png">
                 Added
               </div>
 
-              <button class="add-to-cart-button button-primary js-add-to-cart"
-              data-product-id = "${product.id}">
+              <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id="${product.id}">
                 Add to Cart
               </button>
             </div>
-    `;
-
-    })
-    console.log('Everything is out')
-    console.log(`Here is our ${searchItem}`)
-  }
-  
-  else{
-    productsHTML = ''
-    products.forEach((product) => {
-      searchItem.forEach((search) => {
-        if(product.id === search.id){
-            productsHTML += `<div class="product-container">
-                <div class="product-image-container">
-                  <img class="product-image"
-                    src="${product.image}">
-                </div>
-
-                <div class="product-name limit-text-to-2-lines">
-                  ${product.name}
-                </div>
-
-                <div class="product-rating-container">
-                  <img class="product-rating-stars"
-                    src="${product.getStarsUrl()}">
-                  <div class="product-rating-count link-primary">
-                    ${product.rating.count}
-                  </div>
-                </div>
-
-                <div class="product-price">
-                  ${product.getPrice()}
-                </div>
-
-                <div class="product-quantity-container">
-                  <select class="js-item-quantity"
-                  data-product-id= ${product.id}>
-                    <option selected value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                  </select>
-                </div>
-                ${product.extraInfoHTML()}
-                <div class="product-spacer"></div>
-
-                <div class="added-to-cart js-added-to-cart"
-                data-product-id = "${product.id}">
-                  <img src="images/icons/checkmark.png">
-                  Added
-                </div>
-
-                <button class="add-to-cart-button button-primary js-add-to-cart"
-                data-product-id = "${product.id}">
-                  Add to Cart
-                </button>
-              </div>
-      `;
+          `;
         }
-      })
-    })
-  }
-  // Adding the HTML to the page
-  document.querySelector('.js-products-grid').innerHTML = productsHTML
 
-//Updating the cart
-  function updateCartQuantity(){
+      });
+    });
+  }
+
+
+  // Finally, inject the HTML into the page
+  document.querySelector('.js-products-grid').innerHTML = productsHTML;
+
+
+
+  /*
+  -------------------------------------
+   UPDATE CART QUANTITY FUNCTION
+  -------------------------------------
+  Adds up all quantities in the cart array and shows it in the cart icon.
+  */
+  function updateCartQuantity() {
     let cartQuantity = 0;
 
-      // Calculate the total quantity of items in the cart
-      cart.forEach((item) => {
-          cartQuantity += item.quantity;
-          document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-          
-      });
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+      document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+    });
 
-      console.log(cart);
+    console.log(cart);
   }
 
   updateCartQuantity();
 
-  //Adding stuff to the cart
+
+
+  /*
+  -------------------------------------
+   ADD TO CART FUNCTIONALITY
+  -------------------------------------
+  For every "Add to Cart" button:
+    - Gets product ID
+    - Reads selected quantity
+    - Adds it to the cart
+    - Shows "Added" confirmation briefly
+    - Updates cart counter
+  */
   document.querySelectorAll('.js-add-to-cart').forEach((button) => {
     button.addEventListener('click', () => {
       const productId = button.dataset.productId;
-      
+
+      // Find the selected quantity for this product
       document.querySelectorAll('.js-item-quantity').forEach((selector) => {
-        //Getting the quantity of the item
-        if(selector.dataset.productId === productId){
-          let value = Number(selector.value)
+        if (selector.dataset.productId === productId) {
+          let value = Number(selector.value);
           addToCart(productId, value);
         }
       });
-      
+
+      // Show "Added" animation for that product
       document.querySelectorAll('.js-added-to-cart').forEach((selector) => {
-        
-        if(selector.dataset.productId === productId){
+        if (selector.dataset.productId === productId) {
           console.log(selector.dataset.productId);
-          //changing the css
           selector.style.opacity = 1;
 
+          // Hide the text again after 1.5 seconds
           setTimeout(() => {
             selector.style.opacity = 0;
           }, 1500);
         }
-      })
+      });
 
-     
+      // Update the cart counter
       updateCartQuantity();
-
-      
     });
   });
-
-
 }

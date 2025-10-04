@@ -60,7 +60,7 @@ function getProductQuantity(orderItem, url){
             catch{
                 hoursLeft = -5
             }
-            console.log(typeof hoursLeft)
+            console.log(hoursLeft)
 
             //Setting the width of the loading bar
             let calcWidth = 100 - hoursLeft;
