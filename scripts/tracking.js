@@ -36,25 +36,35 @@ function getProductQuantity(orderItem, url){
 
                 console.log(today)
 
-                let finalDate;
+                
 
             //Getting delivery day
-
+            let finalDate;
             permanentCart.forEach((permItem) => {
                 if(product.productId === permItem.id){
                     let date = dayjs(permItem.delivery);
                     document.querySelector('.js-delivery-date').innerHTML = `Arriving on ${date.format('dddd, MMMM D')}`;
                     finalDate = dayjs(permItem.delivery);
+                    console.log(finalDate)
                 }
             })
 
+            console.log(finalDate)
+
 
             //Checking how many days it is to final date
-            const hoursLeft = finalDate.diff(today, 'hours');
-            console.log(hoursLeft)
+            let hoursLeft;
+            try{
+                hoursLeft = finalDate.diff(today, 'hours');
+            }
+            catch{
+                hoursLeft = -5
+            }
+            console.log(typeof hoursLeft)
 
             //Setting the width of the loading bar
             let calcWidth = 100 - hoursLeft;
+            
             if(calcWidth < 0 && calcWidth < 5){
                 calcWidth = 5;
             }
@@ -64,14 +74,17 @@ function getProductQuantity(orderItem, url){
             }
 
             root.style.setProperty('--progress-bar-width', `${calcWidth}%`);
+            
 
             //Removing item from the permanent cart once it has been delivered
-            permanentCart.forEach((permItem) => {
-                if(product.productId === permItem.id){
+            permanentCart.forEach((permItems) => {
+                
+                if(product.productId === permItems.id){
                     
                     if(calcWidth === 100){
-                       permanentCart.splice(permanentCart.indexOf(permItem), 1);
+                       permanentCart.splice(permanentCart.indexOf(permItems), 1);
                        saveToStorageCart();
+                       console.log('completed')
                         
 
                         //Setting html of the page
@@ -105,6 +118,38 @@ function getProductQuantity(orderItem, url){
                             console.log('Deleted')
                         }
                         
+                    }
+                }
+                //Handle bugs like the perm cart has already deleted the product but for some reason its still in the page
+                else{
+                    if(calcWidth === 100){
+                        document.querySelector('.js-order-tracking').innerHTML = `<div class="order-tracking-title">Order Delivered</div>
+                        <a href="amazon.html">Continue Shopping</a>`
+
+                            if(hoursLeft === -5){
+                                    setTimeout(() => {
+                                    orders.forEach((orderItem) => {
+                                            orderItem.products.forEach((productItem) => {
+                                            if(productItem.productId === searchProductId.trim()){
+                                                orderItem.products.splice(orderItem.products.indexOf(productItem), 1);
+                                                console.log('It has been deleted')
+                                                saveToStorage();
+                                            }
+                                            
+                                            else{
+                                                //console.log(`${permItem.productId} is not equal to ${searchProductId.trim()}`)
+                                            }
+                                        })
+                                    })
+                                    
+                                }, 1000)
+
+                                
+                                orders.forEach((orderItem) => {
+                                    console.log(orderItem)
+                                })
+                                console.log('Deleted')
+                            }
                     }
                 }
             })
