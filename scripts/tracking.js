@@ -60,6 +60,7 @@ function getProductQuantity(orderItem, url){
             catch{
                 hoursLeft = -5
             }
+            
             console.log(hoursLeft)
 
             //Setting the width of the loading bar
@@ -78,22 +79,8 @@ function getProductQuantity(orderItem, url){
 
             //Removing item from the permanent cart once it has been delivered
             permanentCart.forEach((permItems) => {
-                
-                if(product.productId === permItems.id){
-                    
-                    if(calcWidth === 100){
-                       permanentCart.splice(permanentCart.indexOf(permItems), 1);
-                       saveToStorageCart();
-                       console.log('completed')
-                        
-
-                        //Setting html of the page
-
-                        document.querySelector('.js-order-tracking').innerHTML = `<div class="order-tracking-title">Order Delivered</div>
-                        <a href="amazon.html">Continue Shopping</a>`
-
-                        //After 5hrs remove the item from the orders array and the container from the menu
-                        if(hoursLeft === -5){
+                //After 5hrs remove the item from the orders array and the container from the menu
+                if(hoursLeft === -5){
                                 setTimeout(() => {
                                 orders.forEach((orderItem) => {
                                         orderItem.products.forEach((productItem) => {
@@ -117,6 +104,20 @@ function getProductQuantity(orderItem, url){
                             })
                             console.log('Deleted')
                         }
+
+                if(product.productId === permItems.id){
+                    if(calcWidth === 100){
+                       permanentCart.splice(permanentCart.indexOf(permItems), 1);
+                       saveToStorageCart();
+                       console.log('completed')
+                        
+
+                        //Setting html of the page
+
+                        document.querySelector('.js-order-tracking').innerHTML = `<div class="order-tracking-title">Order Delivered</div>
+                        <a href="amazon.html">Continue Shopping</a>`
+
+                        
                         
                     }
                 }
@@ -125,31 +126,6 @@ function getProductQuantity(orderItem, url){
                     if(calcWidth === 100){
                         document.querySelector('.js-order-tracking').innerHTML = `<div class="order-tracking-title">Order Delivered</div>
                         <a href="amazon.html">Continue Shopping</a>`
-
-                            if(hoursLeft === -5){
-                                    setTimeout(() => {
-                                    orders.forEach((orderItem) => {
-                                            orderItem.products.forEach((productItem) => {
-                                            if(productItem.productId === searchProductId.trim()){
-                                                orderItem.products.splice(orderItem.products.indexOf(productItem), 1);
-                                                console.log('It has been deleted')
-                                                saveToStorage();
-                                            }
-                                            
-                                            else{
-                                                //console.log(`${permItem.productId} is not equal to ${searchProductId.trim()}`)
-                                            }
-                                        })
-                                    })
-                                    
-                                }, 1000)
-
-                                
-                                orders.forEach((orderItem) => {
-                                    console.log(orderItem)
-                                })
-                                console.log('Deleted')
-                            }
                     }
                 }
             })

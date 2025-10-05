@@ -23,10 +23,7 @@ export function search(item, url) {
   // Check if we’re not already on the same page
   if (!(window.location.href === url)) {
 
-    // If the search box is empty (no item typed)
-    if (item === '') {
-
-      // Fuse.js options — what fields to search through and how strict to be
+    // Fuse.js options — what fields to search through and how strict to be
       const options = {
         keys: ["name", "keywords"], // The fields we’ll search in each product
         threshold: 0.4 // Lower = more strict, higher = more fuzzy matches
@@ -43,35 +40,21 @@ export function search(item, url) {
       // Extract the matched items only
       const matches = result.map(r => r.item);
       console.log(matches);
+      
 
-      // Store matches in results
+    // If the search box is empty (no item typed)
+    if (item === '') {
       results = matches;
     } 
     
     // If the user typed something
-    else {
-      const options = {
-        keys: ["name", "keywords"],
-        threshold: 0.4
-      };
-
-      const fuse = new Fuse(products, options);
-
-      // Search using Fuse.js
-      const result = fuse.search(item);
-      console.log(result);
-
-      const matches = result.map(r => r.item);
-      console.log(matches);
-
-      // If nothing matches, tell renderProductsGrid() to clear results
-      if (matches.length === 0) {
+    else if(matches.length === 0) {
         results = 'clear';
       } else {
         results = matches;
       }
     }
-  }
+  
 
   return results;
 }
