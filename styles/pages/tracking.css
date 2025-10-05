@@ -75,7 +75,7 @@
 
 /*Creating variable to store the width */
 :root {
-  --progress-bar-width: 50%;
+  --progress-bar-width: 0%;
 }
 
 
@@ -94,5 +94,5 @@
   background-color: green;
   border-radius: 50px;
   width: var(--progress-bar-width);
-  animation: progressAnimation 2s ease-in-out;
+  animation: progressAnimation 3s ease-in-out;
 }
